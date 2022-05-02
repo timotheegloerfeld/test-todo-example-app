@@ -2,6 +2,8 @@ module Tests
 
 open System
 open Xunit
+open FsUnit.Xunit
+open FsUnit
 open FsHttp
 open System.Text.Json
 open System.Text.Json.Serialization
@@ -27,5 +29,7 @@ let ``Get Todos`` () =
 
     let todos = response |> Response.deserializeJson<List<Todo>>
 
-    Assert.Equal(HttpStatusCode.OK, response.statusCode)
-    Assert.NotEmpty(todos)
+    response.statusCode
+    |> should equal HttpStatusCode.OK
+
+    todos |> should not' (equal Empty)
