@@ -17,6 +17,8 @@
     <PackageReference Include="Fake" Version="5.16.0" />
     <PackageReference Include="FSharp.SystemTextJson" Version="0.17.4" />
     <PackageReference Include="FsHttp" Version="9.1.1" />
+    <PackageReference Include="FsUnit" Version="5.0.0" />
+    <PackageReference Include="FsUnit.Xunit" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Npgsql" Version="6.0.4" />
     <PackageReference Include="Respawn" Version="5.0.1" />
