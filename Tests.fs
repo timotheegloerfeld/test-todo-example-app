@@ -8,6 +8,8 @@ open System.Text.Json.Serialization
 open System.Net
 open Respawn
 open Npgsql
+open Fake.Core
+open Xunit.Abstractions
 
 GlobalConfig.Json.defaultJsonSerializerOptions <-
     let options = new JsonSerializerOptions()
@@ -40,6 +42,8 @@ type Todo =
       UpdatedAt: DateTime }
 
 type IntegrationTests(respawnFixture: RespawnFixture) =
+    do respawnFixture.Reset()
+
     [<Fact>]
     member _.``Get Todos``() =
         let response =

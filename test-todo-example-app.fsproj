@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fake" Version="5.16.0" />
+    <PackageReference Include="Fake.Core.Target" Version="5.22.0" />
     <PackageReference Include="FSharp.SystemTextJson" Version="0.17.4" />
     <PackageReference Include="FsHttp" Version="9.1.1" />
     <PackageReference Include="FsUnit" Version="5.0.0" />
