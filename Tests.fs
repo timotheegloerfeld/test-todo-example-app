@@ -44,6 +44,29 @@ type Todo =
 type IntegrationTests(respawnFixture: RespawnFixture) =
     do respawnFixture.Reset()
 
+    member _.getTodos() =
+        http { GET "http://localhost:5228/todos" }
+        |> Request.send
+        |> Response.deserializeJson<List<Todo>>
+
+
+    member _.createTodo() =
+        let response =
+            http {
+                POST "http://localhost:5228/todos"
+                body
+
+                json
+                    """
+                {
+                    "text": "new todo"
+                }
+                """
+            }
+            |> Request.send
+
+        response.headers.Location.AbsolutePath
+
     [<Fact>]
     member _.``Get Todos``() =
         let response =
@@ -57,29 +80,37 @@ type IntegrationTests(respawnFixture: RespawnFixture) =
 
 
     [<Fact>]
-    member _.``Post Todos``() =
-        http {
-            POST "http://localhost:5228/todos"
-            body
-
-            json
-                """
-            {
-                "text": "new todo"
-            }
-            """
-        }
-        |> Request.send
-        |> ignore
-
+    member this.``Post Todos``() =
         let response =
-            http { GET "http://localhost:5228/todos" }
+            http {
+                POST "http://localhost:5228/todos"
+                body
+
+                json
+                    """
+                {
+                    "text": "new todo"
+                }
+                """
+            }
             |> Request.send
 
-        let todos = response |> Response.deserializeJson<List<Todo>>
+        let todos = this.getTodos ()
 
-        Assert.Equal(HttpStatusCode.OK, response.statusCode)
+        Assert.Equal(HttpStatusCode.Created, response.statusCode)
         Assert.Equal(1, todos.Length)
-        Assert.NotEmpty(todos)
+
+    [<Fact>]
+    member _.``Get Single Todo``() = failwith "Not implemented"
+
+    [<Fact>]
+    member _.``Delete Todo``() = failwith "Not implemented"
+
+    [<Fact>]
+    member _.``Check Todo``() = failwith "Not implemented"
+
+    [<Fact>]
+    member _.``Uncheck Todo``() = failwith "Not implemented"
+
 
     interface IClassFixture<RespawnFixture>
