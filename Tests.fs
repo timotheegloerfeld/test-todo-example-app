@@ -41,8 +41,10 @@ type Todo =
       CreatedAt: DateTime
       UpdatedAt: DateTime }
 
-type IntegrationTests(respawnFixture: RespawnFixture) =
+type IntegrationTests(respawnFixture: RespawnFixture, output: ITestOutputHelper) =
     do respawnFixture.Reset()
+
+    member this.output = output
 
     member _.getTodos() =
         http { GET "http://localhost:5228/todos" }
@@ -65,7 +67,7 @@ type IntegrationTests(respawnFixture: RespawnFixture) =
             }
             |> Request.send
 
-        response.headers.Location.AbsolutePath
+        response.headers.Location.AbsoluteUri
 
     [<Fact>]
     member _.``Get Todos``() =
@@ -101,7 +103,17 @@ type IntegrationTests(respawnFixture: RespawnFixture) =
         Assert.Equal(1, todos.Length)
 
     [<Fact>]
-    member _.``Get Single Todo``() = failwith "Not implemented"
+    member this.``Get Single Todo``() =
+        let path = this.createTodo ()
+
+        this.output.WriteLine path
+
+        let response = http { GET path } |> Request.send
+
+        let todo = response |> Response.deserializeJson<Todo>
+
+        Assert.Equal(HttpStatusCode.OK, response.statusCode)
+        Assert.NotNull(todo)
 
     [<Fact>]
     member _.``Delete Todo``() = failwith "Not implemented"
